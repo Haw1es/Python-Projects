@@ -1,0 +1,15 @@
+def spicewood_shade(sentence):
+    # Write code here 
+    words = sentence.split()
+
+    result = []
+    for word in words:
+        if 'e' in word:
+            result.append(word)
+        else:
+            result.append(word[::-1])
+
+    return ' '.join(result)
+
+User_Sentance = input('Enter Sentence: ')
+print(spicewood_shade(User_Sentance))
