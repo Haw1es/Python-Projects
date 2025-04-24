@@ -1,0 +1,22 @@
+fname = input('Enter File Name:')
+fhand = open(fname)
+
+try:
+    fhand = open(Fname)
+except FileNotFoundError:
+    print(f"Error: File '{fname}' not found.")
+    quit()
+
+many = dict()
+
+for line in fhand:
+    line = line.rstrip()
+    wds = line.split()
+    print(wds)
+
+for w in wds:
+  print(w)
+	oldvalue = 0
+	if w in many : oldvalue = many[w]
+	many[w] = oldvalue + 1
+
