@@ -1,22 +1,30 @@
 fname = input('Enter File Name:')
 fhand = open(fname)
 
+many = dict()
+
 try:
-    fhand = open(Fname)
+    fhand = open(fname)
 except FileNotFoundError:
     print(f"Error: File '{fname}' not found.")
     quit()
 
-many = dict()
-
-for line in fhand:
+for line in fhand :
     line = line.rstrip()
     wds = line.split()
-    print(wds)
+    
+    for w in wds:
+        many[w] = many.get(w, 0) + 1
 
-for w in wds:
-  print(w)
-	oldvalue = 0
-	if w in many : oldvalue = many[w]
-	many[w] = oldvalue + 1
+# Find word with the largest count
+largest = None
+bigword = None
+for key, value in many.items() :
+    if largest is None or value > largest :
+        largest = value
+        bigword = key
+
+print(bigword, largest)
+
+
 
