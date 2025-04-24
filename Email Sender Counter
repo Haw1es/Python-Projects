@@ -1,0 +1,23 @@
+name = input("Enter file:")
+##if len(name) < 1:
+    ##name = "mbox-short.txt"
+fh = open(name)
+
+counts = {}
+
+for line in fh:
+    line = line.strip()
+    if line.startswith('From:'):
+        addr = line.split()
+        if len(addr) > 1:
+            email = addr[1]
+            counts[email] = counts.get(email, 0) + 1
+            
+max_sender = None
+max_count = None
+for sender, count in counts.items():
+    if max_count is None or count > max_count:
+        max_sender = sender
+        max_count = count
+
+print(max_sender, max_count)
