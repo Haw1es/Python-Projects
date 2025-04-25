@@ -1,3 +1,5 @@
+
+## Prompts user to enter file name
 fname = input('Enter File Name:')
 fhand = open(fname)
 
