@@ -1,0 +1,43 @@
+name = input("Enter file:")
+if len(name) < 1:
+    name = "mbox-short.txt"
+fh = open(name)
+
+## Creates Dict of hourcount
+hourcount = {}
+
+for line in fh: ## starts a loop to go through file line by line
+    line = line.strip() ## strips white space
+    if line.startswith('From '): ##Checks to see if the line starts with "From"
+        parts = line.split() ###splits the lines using spaces as delimiters
+        if len(parts > 5: ##Ensures enough parts in line to access the time
+               time = parts[5] ##Itendtifies the string that contains the time
+               hour = time.split(':')[0]##Splits out the string created above to get the hour
+               hourcount[hour] = hourcounts.get(hour, 0) +1 ##updates the hourcount dictionary
+       
+            
+for hour in sorted(hour_counts): ######Sorts the dictionary in ascending order
+    print(hour, hour_counts[hour])
+
+
+
+#####Code with no explination lines, 
+name = input("Enter file:")
+if len(name) < 1:
+    name = "mbox-short.txt"
+fh = open(name)
+
+hourcounts = {}
+
+for line in fh:
+    line = line.strip()
+    if line.startswith('From '):
+        parts = line.split()
+        if len(parts) > 5:
+               time = parts[5]
+               hour = time.split(':')[0]
+               hourcounts[hour] = hourcounts.get(hour, 0) +1
+       
+            
+for hour in sorted(hourcounts):
+    print(hour, hourcounts[hour])
