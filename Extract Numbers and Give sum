@@ -1,0 +1,20 @@
+import re
+
+fname = input('Enter File Name: ')
+
+try:
+    fh = open(fname)
+except FileNotFoundError:
+    print(f"Error: File '{fname}' not found.")
+    quit()
+
+numbers = []
+
+for line in fh:
+    found = re.findall('[0-9]+',line)
+    numbers.extend(map(int, found))
+
+total = sum(numbers)
+count = len(numbers)
+print(f'{count}' " Numbers Found")
+print(total)
