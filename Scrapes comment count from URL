@@ -1,0 +1,19 @@
+##Counts Number of Comments and Sum of Numbers in Comments.
+from urllib import request
+from bs4 import BeautifulSoup
+
+url = input('Enter URL: ')
+
+html = request.urlopen(url).read()
+soup = BeautifulSoup(html, 'html.parser')
+
+count_of_spans = 0
+sum = 0
+
+spans = soup('span')
+for span in spans:
+    sum += int(span.contents[0])
+    count_of_spans += 1
+
+print(f"'Count: ', {count_of_spans}")
+print(f"'Sum: '. {sum}")
