@@ -1,32 +1,32 @@
 import urllib.request
 import xml.etree.ElementTree as ET
 
-# Prompt for URL
-url = input("Enter URL: ").strip()
+# Url Prompt
+url = input('Enter URL: ').strip()
 if len(url) < 1:
-    url= "http://py4e-data.dr-chuck.net/comments_42.xml"
+    url= 'http://py4e-data.dr-chuck.net/comments_42.xml'
 
 # Retrieve XML data from the URL
 print(f"Retrieving {url}")
 try:
     response = urllib.request.urlopen(url)
     data = response.read()
-    print(f"Retrieved {len(data)} characters")
+    print(f'Retrieved {len(data)} characters')
 except Exception as e:
-    print("Failed to retrieve data:", e)
+    print('Failed to retrieve data:', e)
     exit()
 
-# Parse XML
+# Read XML
 try:
     tree = ET.fromstring(data)
 except Exception as e:
-    print("Failed to parse XML:", e)
+    print('Failed to read XML:', e)
     exit()
 
-# Find all <count> elements
+# Find all count elements
 counts = tree.findall('.//count')
 print(f"Count: {len(counts)}")
 
-# Compute the sum
+# Find and print sum
 total = sum(int(count.text) for count in counts)
 print(f"Sum: {total}")
