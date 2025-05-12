@@ -1,0 +1,43 @@
+import sqlite3
+import re
+
+# Use a local file
+filename = "mbox.txt"
+try:
+    file_handle = open(filename, 'r')
+except FileNotFoundError:
+    print(f"Error: File '{filename}' not found. Please make sure the file exists in the same directory as the script.")
+    exit()  # Exit the program if the file cannot be opened
+
+conn = sqlite3.connect('emaildb.sqlite')
+cur = conn.cursor()
+
+cur.execute('DROP TABLE IF EXISTS Counts')
+cur.execute('CREATE TABLE Counts (org TEXT, count INTEGER)')
+
+try:
+    for line in file_handle:
+        line = line.strip()
+        if not line.startswith('From: '):
+            continue
+        pieces = line.split()
+        email = pieces[1]
+        domain = email.split('@')[1]
+        cur.execute('SELECT count FROM Counts WHERE org = ? ', (domain,))
+        row = cur.fetchone()
+        if row is None:
+            cur.execute('INSERT INTO Counts (org, count) VALUES (?, 1)', (domain,))
+        else:
+            cur.execute('UPDATE Counts SET count = count + 1 WHERE org = ?', (domain,))
+        conn.commit()
+except Exception as e:
+    print(f"An error occurred while processing the file: {e}")
+    conn.rollback() # Rollback any changes in case of error
+
+# Optional: Print the results
+sqlstr = 'SELECT org, count FROM Counts ORDER BY count DESC'
+
+for row in cur.execute(sqlstr):
+    print(str(row[0]), row[1])
+
+cur.close()
