@@ -1,0 +1,88 @@
+import sqlite3
+import json
+import urllib.request
+import urllib.error
+import sys
+
+
+def create_table(cursor):
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS json_data (
+            url TEXT,
+            heading TEXT,
+            content TEXT
+        )
+    ''')
+
+
+def insert_data(cursor, url, heading, content):
+    try:
+        cursor.execute('''
+            INSERT INTO json_data (url, heading, content)
+            VALUES (?, ?, ?)
+        ''', (url, heading, content))
+    except sqlite3.Error as e:
+        print(f"Error inserting data: {e}")
+
+
+def fetch_json_data(url):
+    data = ""
+    try:
+        with urllib.request.urlopen(url) as response:
+            data = response.read().decode('utf-8')
+            return json.loads(data)
+    except urllib.error.URLError as e:
+        print(f"Error fetching data from {url}: {e}")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from {url}: {e}")
+        print(f"The invalid JSON data is: {data}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+
+
+def process_json_data(cursor, url, json_data):
+    if isinstance(json_data, dict):
+        for heading, content in json_data.items():
+            if isinstance(content, (dict, list)):
+                process_json_data(cursor, url, content)
+            else:
+                insert_data(cursor, url, str(heading), str(content))
+    elif isinstance(json_data, list):
+        for item in json_data:
+            process_json_data(cursor, url, item)
+
+
+def main():
+    try:
+        website_url = input("Enter the website URL: ")
+        if not website_url:
+            print("URL cannot be empty.")
+            return
+    except OSError as e:
+        print(f"I/O error occurred: {e}")
+        return
+
+    if not website_url.startswith("http://") and not website_url.startswith("https://"):
+        website_url = "http://" + website_url
+
+    data = fetch_json_data(website_url)
+    if data is None:
+        print("Failed to retrieve or decode JSON data. Exiting.")
+        return
+
+    conn = sqlite3.connect('website_data.sqlite')
+    cursor = conn.cursor()
+
+    create_table(cursor)
+    process_json_data(cursor, website_url, data)
+
+    conn.commit()
+    conn.close()
+    print("Data successfully processed and stored in website_data.sqlite")
+
+
+if __name__ == "__main__":
+    main()
